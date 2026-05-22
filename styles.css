@@ -221,6 +221,12 @@ section h2 {
 }
 
 /* 文本显示区 */
+.text-display {
+    max-height: 400px;
+    overflow-y: auto;
+    position: relative;
+}
+
 .text-container {
     font-size: 1.5rem;
     line-height: 2;
