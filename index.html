@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow Reading - 影子跟读</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎙️ Shadow Reading</h1>
+            <p class="subtitle">影子跟读练习工具</p>
+        </header>
+
+        <main>
+            <!-- 课程选择区 -->
+            <section class="lesson-selector">
+                <h2>选择练习内容</h2>
+                <div class="lesson-list" id="lessonList">
+                    <!-- 动态生成课程列表 -->
+                </div>
+            </section>
+
+            <!-- 播放控制区 -->
+            <section class="player-section">
+                <div class="audio-controls">
+                    <button id="playBtn" class="btn btn-primary">
+                        <span class="icon">▶️</span> 播放
+                    </button>
+                    <button id="pauseBtn" class="btn btn-secondary" disabled>
+                        <span class="icon">⏸️</span> 暂停
+                    </button>
+                    <div class="speed-control">
+                        <label for="speedSlider">语速:</label>
+                        <input type="range" id="speedSlider" min="0.5" max="1.5" step="0.1" value="1">
+                        <span id="speedValue">1.0x</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </section>
+
+            <!-- 文本显示区 -->
+            <section class="text-display">
+                <div id="textContainer" class="text-container">
+                    <!-- 动态生成带时间戳的文本 -->
+                </div>
+            </section>
+
+            <!-- 录音控制区 -->
+            <section class="recording-section">
+                <h2>🎤 跟读录音</h2>
+                <div class="recording-controls">
+                    <button id="recordBtn" class="btn btn-record">
+                        <span class="icon">🔴</span> 开始录音
+                    </button>
+                    <button id="stopRecordBtn" class="btn btn-secondary" disabled>
+                        <span class="icon">⏹️</span> 停止录音
+                    </button>
+                </div>
+                <div class="recording-status" id="recordingStatus">
+                    <span class="status-dot"></span>
+                    <span class="status-text">准备就绪</span>
+                </div>
+            </section>
+
+            <!-- 录音回放区 -->
+            <section class="playback-section" id="playbackSection" style="display: none;">
+                <h2>🎧 录音回放</h2>
+                <div class="playback-controls">
+                    <audio id="userAudio" controls></audio>
+                    <button id="downloadBtn" class="btn btn-download">
+                        <span class="icon">💾</span> 下载录音
+                    </button>
+                </div>
+            </section>
+
+            <!-- 学习进度区 -->
+            <section class="progress-section">
+                <h2>📊 学习进度</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="completedCount">0</div>
+                        <div class="stat-label">已完成</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="recordedCount">0</div>
+                        <div class="stat-label">已录音</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalTime">0</div>
+                        <div class="stat-label">练习时长(分钟)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 自定义内容上传区 -->
+            <section class="upload-section">
+                <h2>📤 自定义内容</h2>
+                <div class="upload-form">
+                    <div class="form-group">
+                        <label for="customText">英文文本:</label>
+                        <textarea id="customText" rows="4" placeholder="输入要练习的英文文本..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="customAudio">上传音频:</label>
+                        <input type="file" id="customAudio" accept="audio/*">
+                    </div>
+                    <button id="addCustomBtn" class="btn btn-primary">添加到课程</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Shadow Reading Tool &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
