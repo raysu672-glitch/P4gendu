@@ -4,7 +4,7 @@ const defaultLessons = [
         id: 1,
         title: "Daily Greetings",
         text: "Good morning! How are you today? I hope you are having a wonderful day. The weather is beautiful outside.",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        audioUrl: null, // 使用TTS
         duration: "0:30",
         timestamps: [0, 1.2, 2.0, 3.0, 4.5, 5.8, 7.0, 8.5, 10.0, 11.5, 13.0, 14.5, 16.0, 17.5]
     },
@@ -12,7 +12,7 @@ const defaultLessons = [
         id: 2,
         title: "Introducing Yourself",
         text: "Hello, my name is Sarah. I am from Canada. I work as a teacher and I love reading books in my free time.",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        audioUrl: null, // 使用TTS
         duration: "0:35",
         timestamps: [0, 1.0, 2.5, 3.5, 5.0, 6.5, 8.0, 9.5, 11.0, 12.5, 14.0, 15.5, 17.0, 18.5, 20.0, 21.5, 23.0]
     },
@@ -20,7 +20,7 @@ const defaultLessons = [
         id: 3,
         title: "Ordering Food",
         text: "Excuse me, I would like to order a sandwich and a cup of coffee, please. Thank you very much.",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        audioUrl: null, // 使用TTS
         duration: "0:25",
         timestamps: [0, 1.5, 3.0, 4.5, 6.0, 7.5, 9.0, 10.5, 12.0, 13.5, 15.0, 16.5, 18.0, 19.5]
     }
@@ -38,6 +38,13 @@ let userStats = {
     recorded: [],
     totalMinutes: 0
 };
+
+// TTS相关
+let speechSynthesis = window.speechSynthesis;
+let currentUtterance = null;
+let isPlayingTTS = false;
+let ttsStartTime = null;
+let ttsProgressInterval = null;
 
 // DOM 元素
 const elements = {
@@ -78,6 +85,114 @@ function createAudioPlayer() {
     audioPlayer.addEventListener('loadedmetadata', () => {
         console.log('Audio loaded, duration:', audioPlayer.duration);
     });
+}
+
+// 使用TTS播放文本
+function speakText(text) {
+    if (!speechSynthesis) {
+        alert('您的浏览器不支持语音合成，请使用Chrome、Edge或Safari浏览器');
+        return;
+    }
+    
+    // 取消之前的语音
+    speechSynthesis.cancel();
+    
+    // 创建新的语音 utterance
+    currentUtterance = new SpeechSynthesisUtterance(text);
+    currentUtterance.lang = 'en-US';
+    currentUtterance.rate = parseFloat(elements.speedSlider.value);
+    
+    // 获取英文语音
+    const voices = speechSynthesis.getVoices();
+    const englishVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+    if (englishVoice) {
+        currentUtterance.voice = englishVoice;
+    }
+    
+    // 开始播放
+    currentUtterance.onstart = () => {
+        isPlayingTTS = true;
+        ttsStartTime = Date.now();
+        elements.playBtn.disabled = true;
+        elements.pauseBtn.disabled = false;
+        
+        // 启动进度更新
+        startTTSProgress();
+    };
+    
+    // 播放结束
+    currentUtterance.onend = () => {
+        isPlayingTTS = false;
+        stopTTSProgress();
+        handleTTSEnded();
+    };
+    
+    // 播放错误
+    currentUtterance.onerror = (e) => {
+        console.error('TTS错误:', e);
+        isPlayingTTS = false;
+        stopTTSProgress();
+        elements.playBtn.disabled = false;
+        elements.pauseBtn.disabled = true;
+    };
+    
+    speechSynthesis.speak(currentUtterance);
+}
+
+// 启动TTS进度更新
+function startTTSProgress() {
+    if (ttsProgressInterval) clearInterval(ttsProgressInterval);
+    
+    const words = elements.textContainer.querySelectorAll('.word');
+    const totalWords = words.length;
+    const estimatedDuration = totalWords * 0.6 * 1000; // 估算总时长（毫秒）
+    
+    ttsProgressInterval = setInterval(() => {
+        if (!isPlayingTTS || !ttsStartTime) return;
+        
+        const elapsed = Date.now() - ttsStartTime;
+        const progress = Math.min((elapsed / estimatedDuration) * 100, 100);
+        elements.progressFill.style.width = progress + '%';
+        
+        // 计算当前应该高亮的单词
+        const wordIndex = Math.floor((elapsed / estimatedDuration) * totalWords);
+        
+        words.forEach((word, index) => {
+            word.classList.remove('highlight', 'played');
+            if (index === wordIndex) {
+                word.classList.add('highlight');
+                word.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (index < wordIndex) {
+                word.classList.add('played');
+            }
+        });
+    }, 100);
+}
+
+// 停止TTS进度更新
+function stopTTSProgress() {
+    if (ttsProgressInterval) {
+        clearInterval(ttsProgressInterval);
+        ttsProgressInterval = null;
+    }
+}
+
+// TTS播放结束处理
+function handleTTSEnded() {
+    elements.playBtn.disabled = false;
+    elements.pauseBtn.disabled = true;
+    elements.progressFill.style.width = '100%';
+    
+    // 标记为已完成
+    if (currentLesson && !userStats.completed.includes(currentLesson.id)) {
+        userStats.completed.push(currentLesson.id);
+        saveStats();
+        renderLessonList();
+    }
+    
+    // 清除高亮
+    const words = elements.textContainer.querySelectorAll('.word');
+    words.forEach(word => word.classList.remove('highlight'));
 }
 
 // 加载统计数据
@@ -128,13 +243,26 @@ function renderLessonList() {
 
 // 选择课程
 function selectLesson(lesson) {
+    // 停止当前播放
+    if (isPlayingTTS) {
+        speechSynthesis.cancel();
+        isPlayingTTS = false;
+        stopTTSProgress();
+    }
+    if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer.src = '';
+    }
+    
     currentLesson = lesson;
     renderLessonList();
     renderText();
     
-    // 加载音频
-    audioPlayer.src = lesson.audioUrl;
-    audioPlayer.load();
+    // 加载音频（如果有外部URL）
+    if (lesson.audioUrl) {
+        audioPlayer.src = lesson.audioUrl;
+        audioPlayer.load();
+    }
     
     // 重置播放器状态
     elements.playBtn.disabled = false;
@@ -192,22 +320,35 @@ function setupEventListeners() {
 
 // 播放音频
 function playAudio() {
-    if (!audioPlayer.src && currentLesson) {
-        audioPlayer.src = currentLesson.audioUrl;
-    }
+    if (!currentLesson) return;
     
-    audioPlayer.play().then(() => {
-        elements.playBtn.disabled = true;
-        elements.pauseBtn.disabled = false;
-    }).catch(err => {
-        console.error('播放失败:', err);
-        alert('音频加载失败，请重试');
-    });
+    // 如果有外部音频URL，使用Audio播放
+    if (currentLesson.audioUrl) {
+        if (!audioPlayer.src) {
+            audioPlayer.src = currentLesson.audioUrl;
+        }
+        audioPlayer.play().then(() => {
+            elements.playBtn.disabled = true;
+            elements.pauseBtn.disabled = false;
+        }).catch(err => {
+            console.error('播放失败:', err);
+            alert('音频加载失败，请重试');
+        });
+    } else {
+        // 使用TTS播放
+        speakText(currentLesson.text);
+    }
 }
 
 // 暂停音频
 function pauseAudio() {
-    audioPlayer.pause();
+    if (currentLesson?.audioUrl) {
+        audioPlayer.pause();
+    } else if (isPlayingTTS) {
+        speechSynthesis.cancel();
+        isPlayingTTS = false;
+        stopTTSProgress();
+    }
     elements.playBtn.disabled = false;
     elements.pauseBtn.disabled = true;
 }
