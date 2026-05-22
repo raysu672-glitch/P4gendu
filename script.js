@@ -145,7 +145,7 @@ function startTTSProgress() {
             word.classList.remove('highlight', 'played');
             if (index === wordIndex) {
                 word.classList.add('highlight');
-                word.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // 移除自动滚动，让用户自己控制位置
             } else if (index < wordIndex) {
                 word.classList.add('played');
             }
@@ -356,7 +356,7 @@ function handleTimeUpdate() {
         
         if (currentTime >= startTime && currentTime < endTime) {
             word.classList.add('highlight');
-            word.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // 移除自动滚动，让用户自己控制位置
         } else if (currentTime >= endTime) {
             word.classList.add('played');
         }
