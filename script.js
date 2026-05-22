@@ -2,27 +2,11 @@
 const defaultLessons = [
     {
         id: 1,
-        title: "Daily Greetings",
-        text: "Good morning! How are you today? I hope you are having a wonderful day. The weather is beautiful outside.",
-        audioUrl: null, // 使用TTS
-        duration: "0:30",
-        timestamps: [0, 1.2, 2.0, 3.0, 4.5, 5.8, 7.0, 8.5, 10.0, 11.5, 13.0, 14.5, 16.0, 17.5]
-    },
-    {
-        id: 2,
-        title: "Introducing Yourself",
-        text: "Hello, my name is Sarah. I am from Canada. I work as a teacher and I love reading books in my free time.",
-        audioUrl: null, // 使用TTS
-        duration: "0:35",
-        timestamps: [0, 1.0, 2.5, 3.5, 5.0, 6.5, 8.0, 9.5, 11.0, 12.5, 14.0, 15.5, 17.0, 18.5, 20.0, 21.5, 23.0]
-    },
-    {
-        id: 3,
-        title: "Ordering Food",
-        text: "Excuse me, I would like to order a sandwich and a cup of coffee, please. Thank you very much.",
-        audioUrl: null, // 使用TTS
-        duration: "0:25",
-        timestamps: [0, 1.5, 3.0, 4.5, 6.0, 7.5, 9.0, 10.5, 12.0, 13.5, 15.0, 16.5, 18.0, 19.5]
+        title: "C4T1S4 - Urban Landscape",
+        text: "Good day, ladies and gentlemen. I have been asked today to talk to you about the urban landscape. There are two major areas that I will focus on in my talk: how vegetation can have a significant effect on urban climate, and how we can better plan our cities using trees to provide a more comfortable environment for us to live in. Trees can have a significant impact on our cities. They can make a city, as a whole, a bit less windy or a bit more windy, if that's what you want. They can make it a bit cooler if it's a hot summer day in an Australian city, or they can make it a bit more humid if it's a dry inland city. On the local scale - that is, in particular areas within the city - trees can make the local area more shady, cooler, more humid and much less windy. In fact trees and planting of various kinds can be used to make city streets actually less dangerous in particular areas. How do trees do all that, you ask? Well, the main difference between a tree and a building is a tree has got an internal mechanism to keep the temperature regulated. It evaporates water through its leaves and that means that the temperature of the leaves is never very far from our own body temperature. The temperature of a building surface on a hot sunny day can easily be twenty degrees more than our temperature. Trees, on the other hand, remain cooler than buildings because they sweat. This means that they can humidify the air and cool it - a property which can be exploited to improve the local climate. Trees can also help break the force of winds. The reason that high buildings make it windier at ground level is that, as the wind goes higher and higher, it goes faster and faster. When the wind hits the building, it has to go somewhere. Some of it goes over the top and some goes around the sides of the building, forcing those high level winds down to ground level. That doesn't happen when you have trees. Trees filter the wind and considerably reduce it, preventing those very large strong gusts that you so often find around tall buildings. Another problem in built-up areas is that traffic noise is intensified by tall buildings. By planting a belt of trees at the side of the road, you can make things a little quieter, but much of the vehicle noise still goes through the trees. Trees can also help reduce the amount of noise in the surroundings, although the effect is not as large as people like to think. Low-frequency noise, in particular, just goes through the trees as though they aren't there. Although trees can significantly improve the local climate, they do however take up a lot of space. There are root systems to consider and branches blocking windows and so on. It may therefore be difficult to fit trees into the local landscape. There is not a great deal you can do if you have what we call a street canyon - a whole set of high-rises enclosed in a narrow street. Trees need water to grow. They also need some sunlight to grow and you need room to put them. If you have the chance of knocking buildings down and replacing them, then suddenly you can start looking at different ways to design the streets and to introduce.",
+        audioUrl: "https://mp.weixin.qq.com/s/V0Vr-OPTnPgz2C1bkv14kA?token=1038831335&lang=zh_CN",
+        duration: "3:45",
+        timestamps: []
     }
 ];
 
