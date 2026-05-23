@@ -31,6 +31,12 @@
                     <button id="pauseBtn" class="btn btn-secondary" disabled>
                         <span class="icon">⏸️</span> 暂停
                     </button>
+                    <button id="recordBtn" class="btn btn-record">
+                        <span class="icon">🔴</span> 录音
+                    </button>
+                    <button id="stopRecordBtn" class="btn btn-secondary" disabled>
+                        <span class="icon">⏹️</span> 停止
+                    </button>
                     <div class="speed-control">
                         <label for="speedSlider">语速:</label>
                         <input type="range" id="speedSlider" min="0.5" max="1.5" step="0.1" value="1">
@@ -40,21 +46,16 @@
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
+                <div class="recording-status" id="recordingStatus">
+                    <span class="status-dot"></span>
+                    <span class="status-text">准备就绪</span>
+                </div>
             </section>
 
             <!-- 文本显示区 -->
             <section class="text-display">
                 <div id="textContainer" class="text-container">
                     <!-- 动态生成带时间戳的文本 -->
-                </div>
-            </section>
-
-            <!-- 录音状态 -->
-            <section class="recording-section">
-                <h2>🎤 录音状态</h2>
-                <div class="recording-status" id="recordingStatus">
-                    <span class="status-dot"></span>
-                    <span class="status-text">播放时自动录音</span>
                 </div>
             </section>
 
