@@ -306,6 +306,8 @@ section h2 {
 
 #userAudio {
     width: 100%;
+    height: 48px;
+    border-radius: 8px;
 }
 
 /* 统计卡片 */
