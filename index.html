@@ -63,7 +63,15 @@
             <section class="playback-section" id="playbackSection" style="display: none;">
                 <h2>🎧 录音回放</h2>
                 <div class="playback-controls">
-                    <audio id="userAudio" controls></audio>
+                    <div class="custom-player">
+                        <button id="playbackPlayBtn" class="player-btn">▶</button>
+                        <span id="playbackCurrentTime">0:00</span>
+                        <div class="playback-progress-bar" id="playbackProgressBar">
+                            <div class="playback-progress-fill" id="playbackProgressFill"></div>
+                        </div>
+                        <span id="playbackDuration">0:00</span>
+                    </div>
+                    <audio id="userAudio" style="display:none;"></audio>
                     <button id="downloadBtn" class="btn btn-download">
                         <span class="icon">💾</span> 下载录音
                     </button>

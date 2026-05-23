@@ -394,6 +394,9 @@ async function startRecording() {
             elements.userAudio.src = url;
             elements.playbackSection.style.display = 'block';
             
+            // 设置自定义播放器
+            setupPlaybackPlayer();
+            
             // 保存录音记录
             if (currentLesson && !userStats.recorded.includes(currentLesson.id)) {
                 userStats.recorded.push(currentLesson.id);
@@ -452,6 +455,64 @@ function downloadRecording() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+// 设置自定义录音回放播放器
+function setupPlaybackPlayer() {
+    const audio = elements.userAudio;
+    const playBtn = document.getElementById('playbackPlayBtn');
+    const progressBar = document.getElementById('playbackProgressBar');
+    const progressFill = document.getElementById('playbackProgressFill');
+    const currentTimeEl = document.getElementById('playbackCurrentTime');
+    const durationEl = document.getElementById('playbackDuration');
+    
+    // 播放/暂停
+    playBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play();
+            playBtn.textContent = '⏸';
+        } else {
+            audio.pause();
+            playBtn.textContent = '▶';
+        }
+    });
+    
+    // 更新进度
+    audio.addEventListener('timeupdate', () => {
+        if (audio.duration) {
+            const pct = (audio.currentTime / audio.duration) * 100;
+            progressFill.style.width = pct + '%';
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+        }
+    });
+    
+    // 加载完成显示总时长
+    audio.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatTime(audio.duration);
+    });
+    
+    // 播放结束
+    audio.addEventListener('ended', () => {
+        playBtn.textContent = '▶';
+        progressFill.style.width = '0%';
+        currentTimeEl.textContent = '0:00';
+    });
+    
+    // 点击进度条跳转
+    progressBar.addEventListener('click', (e) => {
+        if (audio.duration) {
+            const rect = progressBar.getBoundingClientRect();
+            const pct = (e.clientX - rect.left) / rect.width;
+            audio.currentTime = pct * audio.duration;
+        }
+    });
+}
+
+// 格式化时间
+function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
 }
 
 // 页面加载完成后初始化

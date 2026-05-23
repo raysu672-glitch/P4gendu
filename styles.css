@@ -304,10 +304,61 @@ section h2 {
     gap: 16px;
 }
 
-#userAudio {
-    width: 100%;
-    height: 48px;
+.custom-player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f1f5f9;
+    padding: 10px 16px;
     border-radius: 8px;
+}
+
+.player-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: #4f46e5;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.player-btn:hover {
+    background: #4338ca;
+}
+
+#playbackCurrentTime,
+#playbackDuration {
+    font-size: 0.85rem;
+    color: #475569;
+    min-width: 40px;
+    font-variant-numeric: tabular-nums;
+}
+
+.playback-progress-bar {
+    flex: 1;
+    height: 10px;
+    background: #cbd5e1;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+}
+
+.playback-progress-fill {
+    height: 100%;
+    background: #4f46e5;
+    border-radius: 5px;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+#userAudio {
+    display: none;
 }
 
 /* 统计卡片 */
