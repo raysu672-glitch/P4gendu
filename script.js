@@ -47,10 +47,7 @@ const elements = {
     downloadBtn: document.getElementById('downloadBtn'),
     completedCount: document.getElementById('completedCount'),
     recordedCount: document.getElementById('recordedCount'),
-    totalTime: document.getElementById('totalTime'),
-    customText: document.getElementById('customText'),
-    customAudio: document.getElementById('customAudio'),
-    addCustomBtn: document.getElementById('addCustomBtn')
+    totalTime: document.getElementById('totalTime')
 };
 
 // 初始化
@@ -297,9 +294,6 @@ function setupEventListeners() {
     
     // 下载按钮
     elements.downloadBtn.addEventListener('click', downloadRecording);
-    
-    // 自定义内容
-    elements.addCustomBtn.addEventListener('click', addCustomLesson);
 }
 
 // 播放音频
@@ -458,52 +452,6 @@ function downloadRecording() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-}
-
-// 添加自定义课程
-function addCustomLesson() {
-    const text = elements.customText.value.trim();
-    const audioFile = elements.customAudio.files[0];
-    
-    if (!text) {
-        alert('请输入英文文本');
-        return;
-    }
-    
-    const newLesson = {
-        id: Date.now(),
-        title: `自定义课程 ${defaultLessons.length + 1}`,
-        text: text,
-        audioUrl: audioFile ? URL.createObjectURL(audioFile) : '',
-        duration: '0:00',
-        timestamps: generateTimestamps(text)
-    };
-    
-    defaultLessons.push(newLesson);
-    renderLessonList();
-    
-    // 清空表单
-    elements.customText.value = '';
-    elements.customAudio.value = '';
-    
-    // 自动选择新课程
-    selectLesson(newLesson);
-    
-    alert('自定义课程已添加！');
-}
-
-// 生成时间戳（简单估算）
-function generateTimestamps(text) {
-    const words = text.split(/\s+/);
-    const timestamps = [];
-    let currentTime = 0;
-    
-    words.forEach(() => {
-        timestamps.push(currentTime);
-        currentTime += 0.6; // 假设每个词0.6秒
-    });
-    
-    return timestamps;
 }
 
 // 页面加载完成后初始化
