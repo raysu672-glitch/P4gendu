@@ -39,8 +39,8 @@ const elements = {
     speedSlider: document.getElementById('speedSlider'),
     speedValue: document.getElementById('speedValue'),
     progressFill: document.getElementById('progressFill'),
-    recordBtn: document.getElementById('recordBtn'),
-    stopRecordBtn: document.getElementById('stopRecordBtn'),
+    recordBtn: null,
+    stopRecordBtn: null,
     recordingStatus: document.getElementById('recordingStatus'),
     playbackSection: document.getElementById('playbackSection'),
     userAudio: document.getElementById('userAudio'),
@@ -167,6 +167,9 @@ function handleTTSEnded() {
     elements.pauseBtn.disabled = true;
     elements.progressFill.style.width = '100%';
     
+    // 自动停止录音
+    stopRecording();
+    
     // 标记为已完成
     if (currentLesson && !userStats.completed.includes(currentLesson.id)) {
         userStats.completed.push(currentLesson.id);
@@ -291,10 +294,6 @@ function setupEventListeners() {
         }
     });
     
-    // 录音控制
-    elements.recordBtn.addEventListener('click', startRecording);
-    elements.stopRecordBtn.addEventListener('click', stopRecording);
-    
     // 下载按钮
     elements.downloadBtn.addEventListener('click', downloadRecording);
     
@@ -305,6 +304,9 @@ function setupEventListeners() {
 // 播放音频
 function playAudio() {
     if (!currentLesson) return;
+    
+    // 自动开始录音
+    startRecording();
     
     // 如果有外部音频URL，使用Audio播放
     if (currentLesson.audioUrl) {
@@ -317,6 +319,7 @@ function playAudio() {
         }).catch(err => {
             console.error('播放失败:', err);
             alert('音频加载失败，请重试');
+            stopRecording();
         });
     } else {
         // 使用TTS播放
@@ -326,6 +329,9 @@ function playAudio() {
 
 // 暂停音频
 function pauseAudio() {
+    // 自动停止录音
+    stopRecording();
+    
     if (currentLesson?.audioUrl) {
         audioPlayer.pause();
     } else if (isPlayingTTS) {
@@ -368,6 +374,9 @@ function handleAudioEnded() {
     elements.playBtn.disabled = false;
     elements.pauseBtn.disabled = true;
     elements.progressFill.style.width = '100%';
+    
+    // 自动停止录音
+    stopRecording();
     
     // 标记为已完成
     if (currentLesson && !userStats.completed.includes(currentLesson.id)) {
@@ -414,9 +423,7 @@ async function startRecording() {
         isRecording = true;
         recordingStartTime = Date.now();
         
-        // 更新UI
-        elements.recordBtn.disabled = true;
-        elements.stopRecordBtn.disabled = false;
+        // 更新UI - 显示录音状态
         elements.recordingStatus.classList.add('recording');
         elements.recordingStatus.querySelector('.status-text').textContent = '正在录音...';
         
